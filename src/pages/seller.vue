@@ -1,22 +1,17 @@
-<!-- header -->
+<!-- seller -->
 <template>
-  <div>{{msg}}</div>
+  <div>seller</div>
 </template>
 
 <script>
 export default {
   data() {
     return {
-      msg: 'i am header'
     };
-  },
-
-  components: {},
-
-  methods: {}
+  }
 };
-</script>
 
+</script>
 <style lang='scss' scoped>
 
 </style>
