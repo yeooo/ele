@@ -17,7 +17,7 @@ export default {
      * 去掉就是同步请求
      */
     async getSeller() {
-      let result = await getSeller({ id: 1 }, { test: 1 });
+      let result = await getSeller({ id: 1 });
       if (result.code === 200) {
         console.log('请求成功');
       }

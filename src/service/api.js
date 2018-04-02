@@ -39,24 +39,25 @@ function checkCode(res) {
 }
 
 export default {
-  post(url, data, data2) {
+  post(url, data, headers) {
     return axios({
       method: 'post',
       url,
-      data: qs.stringify(data),
+      // data: qs.stringify(data),
+      data:JSON.parse(data),
       timeout: 30000,
-      headers: data2
+      headers: headers
     })
       .then(checkStatus)
       .then(checkCode);
   },
-  get(url, params, data2) {
+  get(url, params, headers) {
     return axios({
       method: 'get',
       url,
       params,
       timeout: 30000,
-      headers: data2
+      headers: headers
     })
       .then(checkStatus)
       .then(checkCode);
