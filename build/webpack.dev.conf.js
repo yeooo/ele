@@ -16,10 +16,10 @@ const PORT = process.env.PORT && Number(process.env.PORT)
 const express = require('express')
 const app = express()
 
-var appData = require('../data.json')
-var seller = appData.seller;
-var goods = appData.goods;
-var ratings = appData.ratings;
+// var appData = require('../data.json')
+var seller = require('../static/data/seller.json');
+var goods = require('../static/data/goods.json');
+var ratings = require('../static/data/ratings.json');
 
 var apiRoutes = express.Router();
 var Mock = require('mockjs');

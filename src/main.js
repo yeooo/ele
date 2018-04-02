@@ -2,25 +2,14 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
 import App from '@/App';
-// import VueRouter from 'vue-router';
 import router from '@/router/router';
-// import goods from './pages/goods';
-// import ratings from './pages/rating';
-// import seller from './pages/seller';
+
+// import VueResource from 'vue-resource';// vue 2.0已经停止更新，官方推荐使用axios
+
+// 引入公共样式
+import './common/style/index.scss';
+
 Vue.config.productionTip = false;
-
-// Vue.use(VueRouter);
-
-// const routes = [
-//   { path: '/goods', component: goods },
-//   { path: '/ratings', component: ratings },
-//   { path: '/seller', component: seller }
-// ];
-// const router = new VueRouter({
-//   routes // （缩写）相当于 routes: routes
-// });
-// console.log(router);
-
 /* eslint-disable no-new */
 new Vue({
   router,
