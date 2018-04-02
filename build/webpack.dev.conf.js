@@ -39,7 +39,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
             /**
              * 使用mockjs随机模拟数据
              */
-            app.get('/api/s1', (req, res) => {
+            app.post('/api/s1', (req, res) => {
                 res.json(Mock.mock({
                     "status": 200,
                     "data|1-9": [{
@@ -52,7 +52,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
             /**
              * 使用data.json模拟数据源
              */
-            app.get('/api/seller', (req, res) => {
+            app.post('/api/seller', (req, res) => {
                 res.json({
                     errno: 0,//状态码，本地模拟默认成功
                     data: seller//数据
