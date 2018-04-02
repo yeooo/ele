@@ -16,10 +16,10 @@ const PORT = process.env.PORT && Number(process.env.PORT)
 const express = require('express')
 const app = express()
 
-var appData = require('../data.json')
-var seller = appData.seller;
-var goods = appData.goods;
-var ratings = appData.ratings;
+// var appData = require('../data.json')
+var seller = require('../static/data/seller.json');
+var goods = require('../static/data/goods.json');
+var ratings = require('../static/data/ratings.json');
 
 var apiRoutes = express.Router();
 var Mock = require('mockjs');
@@ -39,7 +39,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
             /**
              * 使用mockjs随机模拟数据
              */
-            app.get('/api/s1', (req, res) => {
+            app.post('/api/s1', (req, res) => {
                 res.json(Mock.mock({
                     "status": 200,
                     "data|1-9": [{
@@ -52,7 +52,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
             /**
              * 使用data.json模拟数据源
              */
-            app.get('/api/seller', (req, res) => {
+            app.post('/api/seller', (req, res) => {
                 res.json({
                     errno: 0,//状态码，本地模拟默认成功
                     data: seller//数据
