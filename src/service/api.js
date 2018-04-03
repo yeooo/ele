@@ -43,8 +43,8 @@ export default {
     return axios({
       method: 'post',
       url,
-      // data: qs.stringify(data),
-      data:JSON.parse(data),
+      data: qs.stringify(data),
+      // data:JSON.parse(data),
       timeout: 30000,
       headers: headers
     })

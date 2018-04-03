@@ -4,7 +4,7 @@
 </template>
 
 <script>
-import { getSeller } from '../../service/apiUrl';
+import { getSeller } from 'service/apiUrl';
 export default {
   name: 'goods',
   data() {
