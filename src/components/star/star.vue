@@ -23,7 +23,7 @@ export default {
   },
   computed: {
     starType() {
-      return 'start-' + this.size;
+      return 'star-' + this.size;
     },
     itemClasses() {
       let result = [];
@@ -68,7 +68,6 @@ export default {
   }
   &.star-48 {
     .star-item {
-      display: inline-block;
       width: 20px;
       height: 20px;
       margin-right: 22px;

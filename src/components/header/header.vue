@@ -30,22 +30,38 @@
     <div class="background">
       <img :src="seller.avatar" alt="" width="100%">
     </div>
-    <div v-show="detailShow" class="detail">
-      <div class="detail-wrapper clearfix">
-        <div class="detail-main">
-            <h1 class="name">{{seller.name}}</h1>
-            <star :size="48" :score="seller.score"></star>
+    <transition name="fade">
+      <div v-show="detailShow" class="detail">
+        <div class="detail-wrapper clearfix">
+          <div class="detail-main">
+              <h1 class="name">{{seller.name}}</h1>
+              <div class="star-wrapper">
+                <star :size="36" :score="seller.score"></star>
+              </div>
+              <detail-title :title="'优惠信息'"></detail-title>
+              <ul v-if="seller.supports" class="supports">
+                <li class="support-item" v-for="(item,index) in seller.supports" :key="item.index">
+                  <span class="icon" :class="classMap[seller.supports[index].type]"></span>
+                  <span class="text">{{seller.supports[index].description}}</span>
+                </li>
+              </ul>
+              <detail-title :title="'商家公告'"></detail-title>
+              <div class="blletin">
+                <p class="content">{{seller.bulletin}}</p>
+              </div>
+          </div>
+        </div>
+        <div class="detail-close">
+          <i class="icon-close" @click="hideDetail"></i>
         </div>
       </div>
-      <div class="detail-close">
-        <i class="icon-close" @click="hideDetail"></i>
-      </div>
-    </div>
+    </transition>
   </div>
 </template>
 
 <script>
 import star from 'components/star/star';
+import detailTitle from 'components/detailTitle/detailTitle';
 export default {
   props: {
     seller: {
@@ -58,7 +74,8 @@ export default {
     };
   },
   components: {
-    star
+    star,
+    detailTitle
   },
   methods: {
     showDetail() {
@@ -218,6 +235,15 @@ export default {
     height: 100%;
     overflow: auto;
     background: rgba(7, 17, 27, 0.8);
+    &.fade-enter-active,
+    &.fade-leave-active {
+      transition: all 0.3s ease;
+    }
+    &.fade-enter,
+    &.fade-leave-active {
+      opacity: 0;
+      background: rgba(7, 17, 27, 0);
+    }
     .detail-wrapper {
       min-height: 100%;
       width: 100%;
@@ -229,6 +255,60 @@ export default {
           text-align: center;
           font-size: 16px;
           font-weight: 700;
+        }
+        .star-wrapper {
+          margin-top: 18px;
+          padding: 2px 0;
+          text-align: center;
+        }
+        .supports {
+          width: 80%;
+          margin: 0 auto;
+          .support-item {
+            padding: 0 12px;
+            margin-bottom: 12px;
+            font-size: 0;
+            &:last-child {
+              margin-bottom: 0;
+            }
+            .icon {
+              display: inline-block;
+              width: 16px;
+              height: 16px;
+              vertical-align: top;
+              margin-right: 6px;
+              background-size: 16px 16px;
+              background-repeat: no-repeat;
+              &.decrease {
+                @include bg-image('./static/img/decrease_2');
+              }
+              &.discount {
+                @include bg-image('./static/img/discount_2');
+              }
+              &.guarantee {
+                @include bg-image('./static/img/guarantee_2');
+              }
+              &.invoice {
+                @include bg-image('./static/img/invoice_2');
+              }
+              &.sepcial {
+                @include bg-image('./static/img/special_2');
+              }
+            }
+            .text {
+              line-height: 16px;
+              font-size: 12px;
+            }
+          }
+        }
+        .blletin {
+          width: 80%;
+          margin: 0 auto;
+          .content {
+            padding: 0 12px;
+            line-height: 24px;
+            font-size: 12px;
+          }
         }
       }
     }
