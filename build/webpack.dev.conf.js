@@ -57,7 +57,25 @@ const devWebpackConfig = merge(baseWebpackConfig, {
                     errno: 0,//状态码，本地模拟默认成功
                     data: seller//数据
                 })
-            })
+            });
+            /**
+             * 使用data.json模拟数据源
+             */
+            app.post('/api/goods', (req, res) => {
+              res.json({
+                  errno: 0,//状态码，本地模拟默认成功
+                  data: goods//数据
+              })
+          });
+          /**
+             * 使用data.json模拟数据源
+             */
+            app.post('/api/ratings', (req, res) => {
+              res.json({
+                  errno: 0,//状态码，本地模拟默认成功
+                  data: ratings//数据
+              })
+          });
         },
         clientLogLevel: 'warning',
         historyApiFallback: {

@@ -30,7 +30,6 @@ export default {
       let result = await getSeller();
       if (result.code === ERR_OK) {
         this.seller = result.result;
-        console.log(this.seller);
       }
     }
   },
