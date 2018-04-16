@@ -1,7 +1,7 @@
 <!--goods  -->
 <template>
   <div class="goods">
-    <div class="menu-wrapper">
+    <div class="menu-wrapper" ref="menu">
       <ul>
         <li v-for="item in goods" :key="item.index" class="menu-item">
           <span class="text border-bottom-1px">
@@ -9,7 +9,7 @@
         </li>
       </ul>
     </div>
-    <div class="foods-wrapper">
+    <div class="foods-wrapper" ref="food">
       <ul>
         <li v-for="item in goods" class="food-list" :key="item.key">
           <h1 class="title">{{item.name}}</h1>
@@ -44,7 +44,7 @@
 
 <script>
 import { getGoods } from 'service/apiUrl';
-
+import BScroll from 'better-scroll';
 const ERR_OK = 200;
 export default {
   name: 'goods',
@@ -67,7 +67,12 @@ export default {
       let result = await getGoods();
       if (result.code === ERR_OK) {
         this.goods = result.result;
+        this.initScroll();
       }
+    },
+    initScroll() {
+      this.menuScroll = new BScroll(this.$refs.menu, {});
+      this.foodScroll = new BScroll(this.$refs.food, {});
     }
   },
   created() {
@@ -163,16 +168,16 @@ export default {
           font-size: 14px;
           color: rgb(7, 17, 27);
         }
-        .desc {
-          margin: 8px 0;
-          font-size: 10px;
-          line-height: 10px;
-          color: rgb(147, 153, 159);
-        }
+        .desc,
         .extra {
           font-size: 10px;
           line-height: 10px;
           color: rgb(147, 153, 159);
+        }
+        .desc {
+          margin-bottom: 8px;
+        }
+        .extra {
           span {
             &:first-child {
               margin-right: 12px;
@@ -182,24 +187,16 @@ export default {
         .price {
           font-weight: 700;
           line-height: 24px;
-          .now{
+          .now {
             margin-right: 8px;
             font-size: 14px;
             color: rgb(240, 20, 20);
           }
-          .old{
+          .old {
             text-decoration: line-through;
             font-size: 10px;
             color: rgb(147, 153, 159);
           }
-          // span {
-          //   &:first-child {
-          //     font-size: 10px;
-          //     font-weight: 700;
-          //     color: rgb(147, 153, 159);
-          //     line-height: 24px;
-          //   }
-          // }
         }
       }
     }
