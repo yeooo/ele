@@ -26,12 +26,10 @@
                   {{food.description}}
                 </p>
                 <div class="extra">
-                  <span>月售{{food.sellCount}}份</span>
-                  <span>好评{{food.rating}}%</span>
+                  <span>月售{{food.sellCount}}份</span><span>好评{{food.rating}}%</span>
                 </div>
                 <div class="price">
-                  <span class="now">￥{{food.price}}</span>
-                  <span v-show="food.oldPrice" class="old">￥{{food.oldPrice}}</span>
+                  <span class="now">￥{{food.price}}</span><span v-show="food.oldPrice" class="old">￥{{food.oldPrice}}</span>
                 </div>
               </div>
             </li>
@@ -67,7 +65,9 @@ export default {
       let result = await getGoods();
       if (result.code === ERR_OK) {
         this.goods = result.result;
-        this.initScroll();
+        this.$nextTick(() => {
+          this.initScroll();
+        })
       }
     },
     initScroll() {
@@ -176,6 +176,7 @@ export default {
         }
         .desc {
           margin-bottom: 8px;
+          line-height: 12px;
         }
         .extra {
           span {
