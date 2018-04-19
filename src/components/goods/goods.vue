@@ -3,7 +3,11 @@
   <div class="goods">
     <div class="menu-wrapper" ref="menu">
       <ul>
-        <li v-for="item in goods" :key="item.index" class="menu-item">
+        <li class="menu-item"
+            v-for="(item,$index) in goods"
+            :key="$index"
+            :class="{'current':currentIndex === $index}"
+            @click="selectMenu($index,$event)">
           <span class="text border-bottom-1px">
             <span v-show="item.type > 0" class="icon" :class="classMap[item.type]"></span>{{item.name}}</span>
         </li>
@@ -11,7 +15,7 @@
     </div>
     <div class="foods-wrapper" ref="food">
       <ul>
-        <li v-for="item in goods" class="food-list" :key="item.key">
+        <li v-for="item in goods" class="food-list food-list-hook" :key="item.key">
           <h1 class="title">{{item.name}}</h1>
           <ul>
             <li v-for="food in item.foods" class="food-item border-bottom-1px" :key="food.key">
@@ -31,19 +35,27 @@
                 <div class="price">
                   <span class="now">￥{{food.price}}</span><span v-show="food.oldPrice" class="old">￥{{food.oldPrice}}</span>
                 </div>
+                <div class="cartcontrol-wrapper">
+                  <cartcontrol :food="food"></cartcontrol>
+                </div>
               </div>
             </li>
           </ul>
         </li>
       </ul>
     </div>
+    <shopcart :delivery-price="seller.deliveryPrice"
+              :min-price="seller.minPrice"></shopcart>
   </div>
 </template>
 
 <script>
 import { getGoods } from 'service/apiUrl';
 import BScroll from 'better-scroll';
+import shopcart from 'components/shopCart/shopCart';
+import cartcontrol from 'components/cartcontrol/cartcontrol';
 const ERR_OK = 200;
+
 export default {
   name: 'goods',
   props: {
@@ -53,8 +65,28 @@ export default {
   },
   data() {
     return {
-      goods: []
+      goods: [],
+      listHeight: [],
+      scrollY: 0
     };
+  },
+  computed: {
+    /**
+     * 动态计算索引
+     */
+    currentIndex() {
+      for (let i = 0; i < this.listHeight.length; i++) {
+        let height1 = this.listHeight[i];
+        let height2 = this.listHeight[i + 1];
+        /**
+         * 滚动位置落在了height1和height2之间或者是最后一个 就返回当前索引
+         */
+        if (!height2 || (this.scrollY >= height1 && this.scrollY < height2)) {
+          return i;
+        }
+      }
+      return 0;
+    }
   },
   methods: {
     /**
@@ -66,14 +98,48 @@ export default {
       if (result.code === ERR_OK) {
         this.goods = result.result;
         this.$nextTick(() => {
-          this.initScroll();
-        })
+          this._initScroll();
+          this._caculateHeight();
+        });
       }
     },
-    initScroll() {
-      this.menuScroll = new BScroll(this.$refs.menu, {});
-      this.foodScroll = new BScroll(this.$refs.food, {});
+    _initScroll() {
+      this.menuScroll = new BScroll(this.$refs.menu, {
+        click: true
+      });
+      this.foodScroll = new BScroll(this.$refs.food, {
+        probeType: 3, click: true
+      });
+      /**
+       * 动态监听滚动，实时获得scrollY的正整数
+       */
+      this.foodScroll.on('scroll', (pos) => {
+        this.scrollY = Math.abs(Math.round(pos.y));
+      });
+    },
+    _caculateHeight() {
+      let foodList = this.$refs.food.getElementsByClassName('food-list-hook');// 获取每个类别的总高度：标题+商品
+      let height = 0;
+      this.listHeight.push(height);
+      for (let i = 0; i < foodList.length; i++) {
+        let item = foodList[i];
+        height += item.clientHeight;
+        this.listHeight.push(height);
+      }
+    },
+    selectMenu(index, event) {
+      if (!event._constructed) { // 判断pc中是否有这个属性如果无则不再触发2次点击事件
+        return;
+      }
+      let foodList = this.$refs.food.getElementsByClassName('food-list-hook');
+      let el = foodList[index];
+      console.log(el);
+      this.foodScroll.scrollToElement(el, 300);
     }
+  },
+  components: {
+    shopcart,
+    cartcontrol
   },
   created() {
     this.classMap = ['decrease', 'discount', 'guarantee', 'invoice', 'sepcial'];
@@ -102,6 +168,16 @@ export default {
       height: 54px;
       padding: 0 12px;
       line-height: 14px;
+      &.current {
+        position: relative;
+        z-index: 10;
+        margin-top: -1px;
+        font-weight: 700;
+        background: #fff;
+        .text {
+          @include border-none();
+        }
+      }
       .text {
         display: table-cell;
         width: 56px;
@@ -198,6 +274,11 @@ export default {
             font-size: 10px;
             color: rgb(147, 153, 159);
           }
+        }
+        .cartcontrol-wrapper {
+          position: absolute;
+          right: 0;
+          bottom: 12px;
         }
       }
     }
