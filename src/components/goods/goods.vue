@@ -36,7 +36,9 @@
                   <span class="now">￥{{food.price}}</span><span v-show="food.oldPrice" class="old">￥{{food.oldPrice}}</span>
                 </div>
                 <div class="cartcontrol-wrapper">
-                  <cartcontrol :food="food"></cartcontrol>
+                  <cartcontrol :food="food"
+                               @cart-add="cartAdd">
+                  </cartcontrol>
                 </div>
               </div>
             </li>
@@ -44,7 +46,9 @@
         </li>
       </ul>
     </div>
-    <shopcart :delivery-price="seller.deliveryPrice"
+    <shopcart ref="shopCart"
+              :select-foods="selectFoods"
+              :delivery-price="seller.deliveryPrice"
               :min-price="seller.minPrice"></shopcart>
   </div>
 </template>
@@ -54,6 +58,7 @@ import { getGoods } from 'service/apiUrl';
 import BScroll from 'better-scroll';
 import shopcart from 'components/shopCart/shopCart';
 import cartcontrol from 'components/cartcontrol/cartcontrol';
+
 const ERR_OK = 200;
 
 export default {
@@ -86,6 +91,21 @@ export default {
         }
       }
       return 0;
+    },
+    /** @augments
+     * 动态关联cartcontrol组件
+     * 如果food.count不为空 表明该食物被选中，将其push进数组，并将数组传给shopcart组件
+     */
+    selectFoods() {
+      let foods = [];
+      this.goods.forEach((good) => {
+        good.foods.forEach((food) => {
+          if (food.count) {
+            foods.push(food);
+          }
+        });
+      });
+      return foods;
     }
   },
   methods: {
@@ -127,14 +147,19 @@ export default {
         this.listHeight.push(height);
       }
     },
+    /** @augments
+     * 点击菜单显示对应的食物栏
+     */
     selectMenu(index, event) {
       if (!event._constructed) { // 判断pc中是否有这个属性如果无则不再触发2次点击事件
         return;
       }
       let foodList = this.$refs.food.getElementsByClassName('food-list-hook');
       let el = foodList[index];
-      console.log(el);
-      this.foodScroll.scrollToElement(el, 300);
+      this.foodScroll.scrollToElement(el, 300);// better-scroll的一个api 使得这个dom滚动到最顶部
+    },
+    cartAdd(target) {
+      this.$refs.shopCart.drop(target);
     }
   },
   components: {
