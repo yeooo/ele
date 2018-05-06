@@ -34,6 +34,10 @@ export default {
         this.food.count++;
       }
       this.$emit('cart-add', event.target);
+      /**
+       * vue2.0已经废弃了events和$dispatch
+       */
+      // this.$dispatch('cart-add', event.target);
     },
     decreaseCart(event) {
       if (!event._constructed) {

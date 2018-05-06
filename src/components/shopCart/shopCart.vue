@@ -1,6 +1,6 @@
 <template>
   <div class="shocart">
-    <div class="content">
+    <div class="content" @click="toggleList">
       <div class="content-left">
         <div class="logo-wrapper">
           <div class="logo" :class="{'highlight':totalCount > 0}">
@@ -15,23 +15,43 @@
         <div class="pay" :class="payClass">{{payDesc}}</div>
       </div>
     </div>
-    <transition name="scroll"
-                @before-enter="beforeEnter"
-                @enter="enter"
-                @after-enter="afterEnter">
-      <div class="ball-container">
-        <div v-for="ball in balls"
-            v-show="ball.show"
-            :key="ball.index"
-            class="ball">
+    <div class="ball-container">
+      <transition-group name="scroll"
+                  v-on:before-enter="beforeEnter"
+                  v-on:enter="enter"
+                  v-on:after-enter="afterEnter">
+        <div v-for="(ball,$index) in balls"
+              v-show="ball.show"
+              :key="$index"
+              class="ball">
             <div class="inner inner-hook"></div>
         </div>
+      </transition-group>
+    </div>
+    <div class="shopcart-list" v-show="listShow">
+      <div class="list-header">
+        <h1 class="title">购物车</h1>
+        <span class="empty">清空</span>
       </div>
-    </transition>
+      <div class="list-content">
+        <ul>
+          <li class="food" v-for="food in selectFoods" :key="food.index">
+            <span class="name">{{food.name}}</span>
+            <div class="price">
+              <span>￥{{food.price*food.count}}</span>
+            </div>
+            <div class="cartcontrol-wrapper">
+              <cartcontrol :food="food"></cartcontrol>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import cartcontrol from 'components/cartcontrol/cartcontrol';
 export default {
   name: 'shopCart',
   props: {
@@ -72,7 +92,8 @@ export default {
           show: false
         }
       ],
-      dropBalls: []
+      dropBalls: [],
+      fold: false
     };
   },
   computed: {
@@ -106,11 +127,18 @@ export default {
       } else {
         return 'enough';
       }
+    },
+    listShow() {
+      if (!this.totalCount) {
+        this.fold = true;
+        return false;
+      }
+      let show = !this.fold;
+      return show;
     }
   },
   methods: {
     drop(el) {
-      console.log(el);
       for (let i = 0; i < this.balls.length; i++) {
         let ball = this.balls[i];
         if (!ball.show) {
@@ -122,7 +150,7 @@ export default {
       }
     },
     beforeEnter(el) {
-      console.log(1);
+      console.log('beforeEnter');
       let count = this.balls.length;
       while (count--) {
         let ball = this.balls[count];
@@ -140,7 +168,7 @@ export default {
       }
     },
     enter(el, done) {
-      console.log(2);
+      console.log('enter');
       /* 主动触发浏览器重绘 */
       /* eslint-disable no-unused-vars */
       let rf = el.offsetHeight;
@@ -154,13 +182,22 @@ export default {
       done();
     },
     afterEnter(el) {
-      console.log(3);
+      console.log('afterEnter');
       let ball = this.dropBalls.shift();
       if (ball) {
         ball.show = false;
         el.style.display = 'none';
       }
+    },
+    toggleList() {
+      if (!this.totalCount) {
+        return;
+      }
+      this.fold = !this.fold;
     }
+  },
+  components: {
+    cartcontrol
   }
 };
 
@@ -290,8 +327,10 @@ export default {
       // }
     }
   }
-  .drop-enter,.drop-enter-active,.drop-leave-active{
-    transition:all .4s cubic-bezier(0.49, -0.29, 0.75, 0.41);
+  .drop-enter,
+  .drop-enter-active,
+  .drop-leave-active {
+    transition: all 0.4s cubic-bezier(0.49, -0.29, 0.75, 0.41);
   }
 }
 </style>

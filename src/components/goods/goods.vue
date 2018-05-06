@@ -109,10 +109,6 @@ export default {
     }
   },
   methods: {
-    /**
-     * async await 异步请求
-     * 去掉就是同步请求
-     */
     async getGoods() {
       let result = await getGoods();
       if (result.code === ERR_OK) {
@@ -159,7 +155,10 @@ export default {
       this.foodScroll.scrollToElement(el, 300);// better-scroll的一个api 使得这个dom滚动到最顶部
     },
     cartAdd(target) {
-      this.$refs.shopCart.drop(target);
+      // 优化动画体验
+      this.$nextTick(() => {
+        this.$refs.shopCart.drop(target);
+      });
     }
   },
   components: {
