@@ -240,7 +240,7 @@ export default {
       transition: all 0.3s ease;
     }
     &.fade-enter,
-    &.fade-leave-active {
+    &.fade-leave-to {
       opacity: 0;
       background: rgba(7, 17, 27, 0);
     }
