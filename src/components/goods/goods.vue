@@ -18,7 +18,9 @@
         <li v-for="item in goods" class="food-list food-list-hook" :key="item.key">
           <h1 class="title">{{item.name}}</h1>
           <ul>
-            <li v-for="food in item.foods" class="food-item border-bottom-1px" :key="food.key">
+            <li class="food-item border-bottom-1px" v-for="food in item.foods"
+                                                    :key="food.key"
+                                                    @click="clickFood(food,$event)">
               <div class="icon">
                 <img width="57" height="57" :src="food.icon" alt="">
               </div>
@@ -50,6 +52,7 @@
               :select-foods="selectFoods"
               :delivery-price="seller.deliveryPrice"
               :min-price="seller.minPrice"></shopcart>
+  <food :food="selectedFood" ref="foodComponent"></food>
   </div>
 </template>
 
@@ -58,6 +61,7 @@ import { getGoods } from 'service/apiUrl';
 import BScroll from 'better-scroll';
 import shopcart from 'components/shopCart/shopCart';
 import cartcontrol from 'components/cartcontrol/cartcontrol';
+import food from 'components/food/food';
 
 const ERR_OK = 200;
 
@@ -72,7 +76,8 @@ export default {
     return {
       goods: [],
       listHeight: [],
-      scrollY: 0
+      scrollY: 0,
+      selectedFood: {}
     };
   },
   computed: {
@@ -154,6 +159,13 @@ export default {
       let el = foodList[index];
       this.foodScroll.scrollToElement(el, 300);// better-scroll的一个api 使得这个dom滚动到最顶部
     },
+    clickFood(food, event) {
+      if (!event._constructed) { // 判断pc中是否有这个属性如果无则不再触发2次点击事件
+        return;
+      }
+      this.selectedFood = food;
+      this.$refs.foodComponent.show();
+    },
     cartAdd(target) {
       // 优化动画体验
       this.$nextTick(() => {
@@ -163,7 +175,8 @@ export default {
   },
   components: {
     shopcart,
-    cartcontrol
+    cartcontrol,
+    food
   },
   created() {
     this.classMap = ['decrease', 'discount', 'guarantee', 'invoice', 'sepcial'];
