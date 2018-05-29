@@ -137,20 +137,21 @@ export default {
       }
     },
     listShow() {
+      let vm = this;
       if (!this.totalCount) {
-        this.fold = true;
+        vm.fold = true;
         return false;
       } else {
-        let show = !this.fold;
+        let show = !vm.fold;
         if (show) {
-          if (!this.scroll) {
-            this.$nextTick(() => {
-              this.scroll = new BScroll(this.$refs.listContent, {
+          if (!vm.scroll) {
+            vm.$nextTick(() => {
+              vm.scroll = new BScroll(vm.$refs.listContent, {
                 click: true
               });
             });
           } else {
-            this.scroll.refresh();
+            vm.scroll.refresh();
           }
         }
         return show;

@@ -31,9 +31,9 @@
         <split></split>
         <div class="rating">
           <h1 class="title">商品评价</h1>
-          <ratingselect :only-content="onlyContent" 
+          <ratingselect :only-content="onlyContent"
                         :desc="desc"
-                        :ratings="food.ratings" 
+                        :ratings="food.ratings"
                         @ratingtype-select="ratingTypeSelect"
                         @ratingtype-toggle="ratingTypeToggle"></ratingselect>
           <div class="rating-wrapper">
@@ -114,7 +114,7 @@ export default {
       if (this.onlyContent && !text) {
         return false;
       }
-      if (this.selectType == ALL) {
+      if (this.selectType === ALL) {
         return true;
       } else {
         return type === this.selectType;
