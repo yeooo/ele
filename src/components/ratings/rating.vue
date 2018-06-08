@@ -33,9 +33,9 @@
                     @ratingtype-toggle="ratingTypeToggle"></ratingselect>
     <div class="rating-wrapper">
       <ul>
-        <li class="rating-item" 
-            v-for="(rating,$index) in ratings" 
-            :key="$index" 
+        <li class="rating-item"
+            v-for="(rating,$index) in ratings"
+            :key="$index"
             v-show="needShow(rating.rateType,rating.text)">
           <div class="avatar">
             <img width="28" :src="rating.avatar" alt="">
@@ -45,14 +45,14 @@
             <div class="star-wrapper">
               <star :size="24"
                     :score="rating.score"></star>
-              <span class="delivery" 
+              <span class="delivery"
                     v-show="rating.deliveryTime">{{rating.deliveryTime}}分钟送达</span>
               <p class="text">{{rating.text}}</p>
-              <div class="recommend" 
+              <div class="recommend"
                    v-show="rating.recommend.length>0">
                 <span class="icon-thumb_up"></span>
                 <span v-for="(item,$index) in rating.recommend"
-                      :key="$index" 
+                      :key="$index"
                       class="recommend-item">{{item}}</span>
               </div>
               <div class="time">{{rating.rateTime | formatDate}}</div>

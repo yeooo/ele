@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import { urlParse } from 'common/js/util';
 import Header from 'components/header/header';
 import { getSeller } from 'service/apiUrl';
 const ERR_OK = 200;
@@ -19,7 +20,12 @@ export default {
   name: 'App',
   data() {
     return {
-      seller: {}
+      seller: {
+        id: (() => {
+          let queryParam = urlParse();
+          return queryParam.id;
+        })()
+      }
     };
   },
   components: {

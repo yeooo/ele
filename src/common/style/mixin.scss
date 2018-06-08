@@ -1,6 +1,7 @@
 /**
 *css 工具类
 */
+
 @mixin border-bottom-1px($color) {
   position: relative;
   &:after {
@@ -13,7 +14,8 @@
     content: '';
   }
 }
-@mixin border-none(){
+
+@mixin border-none() {
   &:after {
     display: none;
   }
@@ -21,7 +23,7 @@
 
 @mixin bg-image($url) {
   background-image: url($url+'@2x.png');
-  @media (-webkit-min-device-pixel-ratio: 3),(min-device-pixel-ratio: 3) {
+  @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3) {
     background-image: url($url+'@3x.png');
   }
 }
