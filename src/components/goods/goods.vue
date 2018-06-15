@@ -14,7 +14,8 @@
       </ul>
     </div>
     <div class="foods-wrapper" ref="food">
-      <ul>
+      <!-- <good-item v-for="item in goods" :item="item" :key="item.key" v-if="loading"></good-item> -->
+      <ul v-if="loading">
         <li v-for="item in goods" class="food-list food-list-hook" :key="item.key">
           <h1 class="title">{{item.name}}</h1>
           <ul>
@@ -47,6 +48,9 @@
           </ul>
         </li>
       </ul>
+      <div v-for="loade in loades" :key="loade.key" v-if="!loading">
+        <loading-item ></loading-item>
+      </div>
     </div>
     <shopcart ref="shopCart"
               :select-foods="selectFoods"
@@ -58,11 +62,12 @@
 
 <script>
 import { getGoods } from 'service/apiUrl';
+import loadingItem from '../loading/loadingItem';
 import BScroll from 'better-scroll';
 import shopcart from 'components/shopCart/shopCart';
 import cartcontrol from 'components/cartcontrol/cartcontrol';
+// import goodItem from './goodItem';
 import food from 'components/food/food';
-
 const ERR_OK = 200;
 
 export default {
@@ -77,7 +82,9 @@ export default {
       goods: [],
       listHeight: [],
       scrollY: 0,
-      selectedFood: {}
+      selectedFood: {},
+      loades: 10,
+      loading: false
     };
   },
   computed: {
@@ -103,8 +110,8 @@ export default {
      */
     selectFoods() {
       let foods = [];
-      this.goods.forEach((good) => {
-        good.foods.forEach((food) => {
+      this.goods.forEach(good => {
+        good.foods.forEach(food => {
           if (food.count) {
             foods.push(food);
           }
@@ -117,6 +124,7 @@ export default {
     async getGoods() {
       let result = await getGoods();
       if (result.code === ERR_OK) {
+        this.loading = true;
         this.goods = result.result;
         this.$nextTick(() => {
           this._initScroll();
@@ -129,17 +137,18 @@ export default {
         click: true
       });
       this.foodScroll = new BScroll(this.$refs.food, {
-        probeType: 3, click: true
+        probeType: 3,
+        click: true
       });
       /**
        * 动态监听滚动，实时获得scrollY的正整数
        */
-      this.foodScroll.on('scroll', (pos) => {
+      this.foodScroll.on('scroll', pos => {
         this.scrollY = Math.abs(Math.round(pos.y));
       });
     },
     _caculateHeight() {
-      let foodList = this.$refs.food.getElementsByClassName('food-list-hook');// 获取每个类别的总高度：标题+商品
+      let foodList = this.$refs.food.getElementsByClassName('food-list-hook'); // 获取每个类别的总高度：标题+商品
       let height = 0;
       this.listHeight.push(height);
       for (let i = 0; i < foodList.length; i++) {
@@ -152,15 +161,17 @@ export default {
      * 点击菜单显示对应的食物栏
      */
     selectMenu(index, event) {
-      if (!event._constructed) { // 判断pc中是否有这个属性如果无则不再触发2次点击事件
+      if (!event._constructed) {
+        // 判断pc中是否有这个属性如果无则不再触发2次点击事件
         return;
       }
       let foodList = this.$refs.food.getElementsByClassName('food-list-hook');
       let el = foodList[index];
-      this.foodScroll.scrollToElement(el, 300);// better-scroll的一个api 使得这个dom滚动到最顶部
+      this.foodScroll.scrollToElement(el, 300); // better-scroll的一个api 使得这个dom滚动到最顶部
     },
     clickFood(food, event) {
-      if (!event._constructed) { // 判断pc中是否有这个属性如果无则不再触发2次点击事件
+      if (!event._constructed) {
+        // 判断pc中是否有这个属性如果无则不再触发2次点击事件
         return;
       }
       this.selectedFood = food;
@@ -176,14 +187,17 @@ export default {
   components: {
     shopcart,
     cartcontrol,
-    food
+    food,
+    // goodItem,
+    loadingItem
   },
   created() {
     this.classMap = ['decrease', 'discount', 'guarantee', 'invoice', 'sepcial'];
-    this.getGoods();
+    setTimeout(() => {
+      this.getGoods();
+    }, 100000);
   }
 };
-
 </script>
 <style lang='scss' scoped>
 .goods {
@@ -220,7 +234,7 @@ export default {
         width: 56px;
         vertical-align: middle;
         font-size: 12px;
-        @include border-bottom-1px(rgba(7,17,27,0.1));
+        @include border-bottom-1px(rgba(7, 17, 27, 0.1));
       }
       .icon {
         display: inline-block;
@@ -263,7 +277,7 @@ export default {
       display: flex;
       margin: 18px;
       padding-bottom: 18px;
-      @include border-bottom-1px(rgba(7,17,27,0.1));
+      @include border-bottom-1px(rgba(7, 17, 27, 0.1));
       &:last-child {
         @include border-none();
         margin-bottom: 0;
