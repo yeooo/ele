@@ -195,7 +195,7 @@ export default {
     this.classMap = ['decrease', 'discount', 'guarantee', 'invoice', 'sepcial'];
     setTimeout(() => {
       this.getGoods();
-    }, 100000);
+    }, 1000);
   }
 };
 </script>
